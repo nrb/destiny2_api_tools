@@ -66,13 +66,23 @@ def show_faction_progress(character, factions):
         token_value = lookup_token_values(f_name)
         # print('{}: {}'.format(f_name, token_value))
 
+        # blue mats = 100
+        # green mats = 35
+
         remaining = int(next_level) - int(current)
         tokens_needed = remaining / token_value
 
-        display = "{name}: {current} / {next_level} ({tokens_needed})"
+        green_mats_needed = remaining / 35
+
+        display = '{name}: {current} / {next_level} ({tokens_needed} tokens/blue mats or {greens} planet mats)'
+        if f_name == 'Gunsmith':
+            display = '{name}: {current} / {next_level} ({tokens_needed} Gunsmith Materials)'
+        if f_name == 'Vanguard Research':
+            display = '{name}: {current} / {next_level} ({tokens_needed} tokens)'
         print(display.format(name=f_name, current=current,
                              next_level=next_level,
-                             tokens_needed=tokens_needed))
+                             tokens_needed=tokens_needed,
+                             greens=green_mats_needed))
 
 
 def lookup_token_values(faction_name):
