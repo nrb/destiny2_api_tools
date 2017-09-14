@@ -60,11 +60,28 @@ def show_faction_progress(character, factions):
         if f_name == 'Classified':
             continue
         next_level = data['nextLevelAt']
-        remaining = data['progressToNextLevel']
+        current = data['progressToNextLevel']
 
-        display = "{name}: {remaining} / {next_level}"
-        print(display.format(name=f_name, remaining=remaining,
-                             next_level=next_level))
+        token_value = lookup_token_values(f_name)
+        # print('{}: {}'.format(f_name, token_value))
+
+        remaining = int(next_level) - int(current)
+        tokens_needed = remaining / token_value
+
+        display = "{name}: {current} / {next_level} ({tokens_needed})"
+        print(display.format(name=f_name, current=current,
+                             next_level=next_level,
+                             tokens_needed=tokens_needed))
+
+
+def lookup_token_values(faction_name):
+    exceptions = {
+        'Gunsmith': 2000 / 30,
+        'Vanguard Research': 7000 / 3
+    }
+    if exceptions.get(faction_name, None):
+        return exceptions[faction_name]
+    return 2000 / 20
 
 # ctx = {'info': info, 'char': character,
 #        'pprint': pprint.pprint,
