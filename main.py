@@ -2,6 +2,7 @@ import os
 import json
 import requests
 import sqlite3
+import sys
 
 BASE_URL = 'https://bungie.net/Platform/Destiny2/'
 
@@ -117,10 +118,13 @@ def get_profile(member_type, username):
 
 
 def main():
-    # PSN
-    MEMBER_TYPE = '2'
-    USER = 'guubu'
-    info = get_profile(MEMBER_TYPE, USER)
+    member_type = '2'
+    user = 'GUUBU'
+    args = sys.argv[1:]
+    if len(args) == 2:
+        member_type = args[0]
+        user = args[1]
+    info = get_profile(member_type, user)
     progs = info['characterProgressions']['data']
     characters = info['characters']['data']
     for _, char in characters.items():
