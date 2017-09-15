@@ -11,4 +11,6 @@ Then, use `pipenv run python main.py` to look up current vendor progression data
 
 # Usage
 
-`pipenv run python main.py 2 <PSN_ID>` for fetching an account's vendor progression data
+`pipenv run python main.py {platform} {username}` for fetching an account's vendor progression data
+
+The platform should be one of `xbox`, `psn`, or `blizzard`.

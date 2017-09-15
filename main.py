@@ -1,3 +1,4 @@
+import argparse
 import code
 import os
 import json
@@ -148,14 +149,40 @@ def _clear():
     print("\x1b[2J\x1b[H")
 
 
+def parse_args(args):
+    parser = argparse.ArgumentParser()
+    parser.add_argument('platform',
+                        choices=['xbox', 'psn', 'blizzard'],
+                        help='The platform the user plays on')
+    parser.add_argument('user',
+                        help='Username associated with the Destiny 2 account')
+    parser.add_argument('-s', '--shell',
+                        action='store_true',
+                        help="Launch a shell with the given account's data loaded")
+    return parser.parse_args(args)
+
+
+def parse_platform(platform_id):
+    platforms = {
+        'none': 0,
+        'xbox': 1,
+        'psn': 2,
+        'blzzard': 4,
+        'battlenet': 4,
+        'tigerdemon': 10,
+        'bungienext': 254,
+        'all': -1,
+    }
+
+    return platforms[platform_id.lower()]
+
+
 def main():
-    member_type = '2'
-    user = 'GUUBU'
-    args = sys.argv[1:]
-    if len(args) == 2:
-        member_type = args[0]
-        user = args[1]
-    profile = get_profile(member_type, user)
+    args = parse_args(sys.argv[1:])
+
+    platform = parse_platform(args.platform)
+
+    profile = get_profile(platform, args.user)
     progs = profile['characterProgressions']['data']
     characters = profile['characters']['data']
 
@@ -166,7 +193,7 @@ def main():
     items = get_inventoryitem_data(conn)
     conn.close()
 
-    if len(args) == 1 and args[0] == 'shell':
+    if args.shell:
         ctx = {'profile': profile, 'progs': progs, 'chars': characters,
                'factions': factions, 'vendors': vendors,
                'milestones': milestones, 'clear': _clear,
