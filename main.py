@@ -1,3 +1,4 @@
+import code
 import os
 import json
 import requests
@@ -94,12 +95,6 @@ def lookup_token_values(faction_name):
         return exceptions[faction_name]
     return 2000 / 20
 
-# ctx = {'info': info, 'char': character,
-#        'pprint': pprint.pprint,
-#        'factions': factions,
-#        'vendors': vendors}
-# code.interact(local=ctx)
-
 
 def get_membership_id(member_type, username):
     GET_ID_URL = (BASE_URL + 'SearchDestinyPlayer/' +
@@ -127,6 +122,10 @@ def get_profile(member_type, username):
     return profile
 
 
+def launch_shell(context):
+    code.interact(local=context)
+
+
 def main():
     member_type = '2'
     user = 'GUUBU'
@@ -134,9 +133,18 @@ def main():
     if len(args) == 2:
         member_type = args[0]
         user = args[1]
-    info = get_profile(member_type, user)
-    progs = info['characterProgressions']['data']
-    characters = info['characters']['data']
+    profile = get_profile(member_type, user)
+    progs = profile['characterProgressions']['data']
+    characters = profile['characters']['data']
+    factions = get_faction_data()
+    vendors = get_vendor_data()
+
+    if len(args) == 1 and args[0] == 'shell':
+        ctx = {'profile': profile, 'progs': progs, 'chars': characters,
+               'factions': factions, 'vendors': vendors}
+        launch_shell(ctx)
+        return
+
     for _, char in characters.items():
         char_class = get_characters_class(int(char['classType']))
         print(char_class)
