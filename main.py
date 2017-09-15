@@ -47,6 +47,12 @@ def get_milestone_data(conn):
     return milestones
 
 
+def get_inventoryitem_data(conn):
+    items = get_table_data(conn, 'inventoryItem')
+
+    return items
+
+
 def get_milestone_rewards(milestones):
     for _, data in milestones.items():
         pass
@@ -157,12 +163,14 @@ def main():
     vendors = get_vendor_data(conn)
     factions = get_faction_data(conn)
     milestones = get_milestone_data(conn)
+    items = get_inventoryitem_data(conn)
     conn.close()
 
     if len(args) == 1 and args[0] == 'shell':
         ctx = {'profile': profile, 'progs': progs, 'chars': characters,
                'factions': factions, 'vendors': vendors,
-               'milestones': milestones, 'clear': _clear}
+               'milestones': milestones, 'clear': _clear,
+               'items': items}
         launch_shell(ctx)
         return
 
