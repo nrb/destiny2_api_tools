@@ -8,49 +8,41 @@ import sys
 BASE_URL = 'https://bungie.net/Platform/Destiny2/'
 
 
-def get_vendor_data():
-    con = sqlite3.connect('Manifest.db')
+def get_table_data(conn, data_type):
+    cur = conn.cursor()
+    query_tmpl = 'SELECT json from Destiny{data_type}Definition'
 
-    cur = con.cursor()
+    def clean(table_name):
+        cleaned = ''.join(chr for chr in table_name if chr.isalnum())
+        return cleaned.capitalize()
+    table_name = clean(data_type)
 
-    cur.execute('SELECT json from DestinyVendorDefinition')
-    vendor_rows = cur.fetchall()
+    query = query_tmpl.format(data_type=table_name)
+    cur.execute(query)
 
-    vendors = {}
-    for row in vendor_rows:
+    rows = cur.fetchall()
+
+    all_data = {}
+    for row in rows:
         data = json.loads(row[0])
-        vendors[data['hash']] = data
+        all_data[data['hash']] = data
+    return all_data
+
+
+def get_vendor_data(conn):
+    vendors = get_table_data(conn, 'vendor')
 
     return vendors
 
 
-def get_faction_data():
-    con = sqlite3.connect('Manifest.db')
-    cur = con.cursor()
-
-    cur.execute('SELECT json from DestinyFactionDefinition')
-    faction_rows = cur.fetchall()
-
-    factions = {}
-
-    for row in faction_rows:
-        data = json.loads(row[0])
-        factions[data['hash']] = data
+def get_faction_data(conn):
+    factions = get_table_data(conn, 'faction')
 
     return factions
 
 
-def get_milestone_data():
-    con = sqlite3.connect('Manifest.db')
-    cur = con.cursor()
-
-    cur.execute('SELECT json from DestinyMilestoneDefinition')
-    milestone_rows = cur.fetchall()
-
-    milestones = {}
-    for row in milestone_rows:
-        data = json.loads(row[0])
-        milestones[data['hash']] = data
+def get_milestone_data(conn):
+    milestones = get_table_data(conn, 'milestone')
 
     return milestones
 
@@ -161,9 +153,11 @@ def main():
     progs = profile['characterProgressions']['data']
     characters = profile['characters']['data']
 
-    factions = get_faction_data()
-    vendors = get_vendor_data()
-    milestones = get_milestone_data()
+    conn = sqlite3.connect('Manifest.db')
+    vendors = get_vendor_data(conn)
+    factions = get_faction_data(conn)
+    milestones = get_milestone_data(conn)
+    conn.close()
 
     if len(args) == 1 and args[0] == 'shell':
         ctx = {'profile': profile, 'progs': progs, 'chars': characters,
@@ -177,7 +171,7 @@ def main():
         print(char_class)
         print('-----')
         chars_progs = progs[char['characterId']]
-        show_faction_progress(chars_progs, get_faction_data())
+        show_faction_progress(chars_progs, factions)
         print('\n')
 
 
