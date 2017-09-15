@@ -146,6 +146,10 @@ def launch_shell(context):
     code.interact(local=context)
 
 
+def _clear():
+    print("\x1b[2J\x1b[H")
+
+
 def main():
     member_type = '2'
     user = 'GUUBU'
