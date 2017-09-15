@@ -19,7 +19,9 @@ manifest_file_url = 'http://www.bungie.net' + manifest['Response']['mobileWorldC
 
 target = pathlib.Path('./Manifest.db')
 
-if target.exists():
+args = sys.argv[1:]
+
+if target.exists() and 'update' not in args:
     print("Manifest.db already present, nothing to do!")
     sys.exit(0)
 
