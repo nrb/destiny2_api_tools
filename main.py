@@ -90,9 +90,9 @@ def show_faction_progress(character, factions):
         # green mats = 35
 
         remaining = int(next_level) - int(current)
-        tokens_needed = remaining / token_value
+        tokens_needed = remaining // token_value
 
-        green_mats_needed = remaining / 35
+        green_mats_needed = remaining // 35
 
         display = '{name}: {current} / {next_level} ({tokens_needed} tokens/blue mats or {greens} planet mats)'
         if f_name == 'Gunsmith':
