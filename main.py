@@ -40,6 +40,26 @@ def get_faction_data():
     return factions
 
 
+def get_milestone_data():
+    con = sqlite3.connect('Manifest.db')
+    cur = con.cursor()
+
+    cur.execute('SELECT json from DestinyMilestoneDefinition')
+    milestone_rows = cur.fetchall()
+
+    milestones = {}
+    for row in milestone_rows:
+        data = json.loads(row[0])
+        milestones[data['hash']] = data
+
+    return milestones
+
+
+def get_milestone_rewards(milestones):
+    for _, data in milestones.items():
+        pass
+
+
 def get_characters_class(class_type):
     class_types = [
         'Titan',
@@ -136,12 +156,15 @@ def main():
     profile = get_profile(member_type, user)
     progs = profile['characterProgressions']['data']
     characters = profile['characters']['data']
+
     factions = get_faction_data()
     vendors = get_vendor_data()
+    milestones = get_milestone_data()
 
     if len(args) == 1 and args[0] == 'shell':
         ctx = {'profile': profile, 'progs': progs, 'chars': characters,
-               'factions': factions, 'vendors': vendors}
+               'factions': factions, 'vendors': vendors,
+               'milestones': milestones, 'clear': _clear}
         launch_shell(ctx)
         return
 
