@@ -142,7 +142,18 @@ def get_profile(member_type, username):
 
 
 def launch_shell(context):
-    code.interact(local=context)
+    available_vars = '\n  '.join(context.keys())
+
+    banner = ("Type 'h()' for help on destiny variables.\n"
+              "Use 'clear()' to clear the screen")
+
+    def h():
+        print("Available variables:\n  " + available_vars)
+
+    context['h'] = h
+    context['clear'] = _clear
+
+    code.interact(banner=banner, local=context)
 
 
 def _clear():
@@ -196,8 +207,7 @@ def main():
     if args.shell:
         ctx = {'profile': profile, 'progs': progs, 'chars': characters,
                'factions': factions, 'vendors': vendors,
-               'milestones': milestones, 'clear': _clear,
-               'items': items}
+               'milestones': milestones, 'items': items}
         launch_shell(ctx)
         return
 

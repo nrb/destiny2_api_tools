@@ -14,3 +14,7 @@ Then, use `pipenv run python main.py` to look up current vendor progression data
 `pipenv run python main.py {platform} {username}` for fetching an account's vendor progression data
 
 The platform should be one of `xbox`, `psn`, or `blizzard`.
+
+# Getting an interactive shell
+
+The `-s` or `--shell` option to `main.py` will get you an interactive shell. This is a Python REPL with some Destiny inforation pre-loaded into the context. Use `h()` to list the available variables.
