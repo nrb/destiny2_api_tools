@@ -9,6 +9,12 @@ import sys
 BASE_URL = 'https://bungie.net/Platform/Destiny2/'
 
 
+def dump(thing):
+    """Convenience function for printing stuff"""
+    import pprint
+    pprint.pprint(thing)
+
+
 def get_table_data(conn, data_type):
     cur = conn.cursor()
     query_tmpl = 'SELECT json from Destiny{data_type}Definition'
